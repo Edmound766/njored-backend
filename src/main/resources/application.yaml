@@ -1,0 +1,18 @@
+ktor:
+  deployment:
+    port: 8080
+  application:
+    modules:
+      - com.njored.HttpKt.configureHttp
+      - com.njored.SerializationKt.configureSerialization
+      - com.njored.StatusPagesKt.configureStatusPages
+      - com.njored.RoutingKt.configureRouting
+      - com.njored.database.DatabaseFactoryKt.configureDatabase
+
+database:
+    host: ${DB_HOST:localhost}
+    port: ${DB_PORT:5432}
+    name: ${DB_NAME:njored}
+    user: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:""}
+

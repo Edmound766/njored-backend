@@ -1,14 +1,28 @@
 services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=njored
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - njored_pg_data:/var/lib/postgresql/data
+    networks:
+      - njored_default
+    restart: unless-stopped
+
   ktor-app:
-    image: ktor-docker-image:latest 
+    image: ktor-docker-image:latest
     ports:
       - "8080:8080"
     environment:
-      - DB_HOST=${DB_HOST} # This will evaluate to your database container name
+      - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=njored
       - DB_USER=postgres
       - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - postgres
     networks:
       - njored_default
     restart: unless-stopped
@@ -20,7 +34,9 @@ services:
       - njored_default
     restart: unless-stopped
 
-# Tell Compose that the network is already created out in the system
 networks:
   njored_default:
-    external: true
+    driver: bridge
+
+volumes:
+  njored_pg_data:

@@ -1,0 +1,26 @@
+services:
+  ktor-app:
+    image: ktor-docker-image:latest 
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=${DB_HOST} # This will evaluate to your database container name
+      - DB_PORT=5432
+      - DB_NAME=njored
+      - DB_USER=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks:
+      - njored_default
+    restart: unless-stopped
+
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - njored_default
+    restart: unless-stopped
+
+# Tell Compose that the network is already created out in the system
+networks:
+  njored_default:
+    external: true

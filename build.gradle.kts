@@ -1,9 +1,18 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(ktorLibs.plugins.ktor)
     alias(libs.plugins.kotlin.serialization)
     id("org.flywaydb.flyway") version "12.9.0"
+}
+
+tasks.withType<ShadowJar>(){
+    // 1. Tell the shadow plugin to merge identical service files instead of overwriting them
+    mergeServiceFiles()
+
+    // 2. Resolve conflicting duplicate files across your dependencies (like Flyway)
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 group = "com.njored"
